@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎨 Cartoon World!</title>
+
+  <!-- Google Fonts: Bubbly display + clean body -->
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =============================================
+       ROOT VARIABLES – Global color & style tokens
+    ============================================== */
+    :root {
+      --sky: #7ECEF4;
+      --sun: #FFD93D;
+      --grass: #6BCB77;
+      --coral: #FF6B6B;
+      --purple: #C77DFF;
+      --orange: #FF9A3C;
+      --white: #FFFDF7;
+      --dark: #2D2D2D;
+      --outline: 3px solid #2D2D2D;
+      --shadow: 4px 4px 0px #2D2D2D;
+      --shadow-lg: 6px 6px 0px #2D2D2D;
+      --radius: 20px;
+      --font-display: 'Boogaloo', cursive;
+      --font-body: 'Nunito', sans-serif;
+    }
+
+    /* =============================================
+       RESET & BASE
+    ============================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--sky);
+      color: var(--dark);
+      overflow-x: hidden;
+      cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><text y='28' font-size='28'>⭐</text></svg>") 16 16, auto;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: var(--sun); }
+    ::-webkit-scrollbar-thumb { background: var(--coral); border: 2px solid var(--dark); border-radius: 10px; }
+
+    /* =============================================
+       FLOATING BACKGROUND CLOUDS
+    ============================================== */
+    .clouds-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.75;
+      animation: floatCloud linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud::before { width: 60%; height: 150%; top: -40%; left: 15%; }
+    .cloud::after  { width: 40%; height: 120%; top: -25%; left: 50%; }
+
+    @keyframes floatCloud {
+      from { transform: translateX(-250px); }
+      to   { transform: translateX(calc(100vw + 250px)); }
+    }
+
+    /* =============================================
+       MAIN WRAPPER
+    ============================================== */
+    .wrapper { position: relative; z-index: 1; }
+
+    /* =============================================
+       NAVIGATION BAR
+    ============================================== */
+    nav {
+      background: var(--sun);
+      border-bottom: var(--outline);
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 0 #2D2D2D;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    .nav-logo span { color: var(--coral); }
+
+    .nav-links { display: flex; gap: 12px; list-style: none; }
+
+    .nav-links a {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: var(--dark);
+      background: var(--white);
+      border: var(--outline);
+      border-radius: 50px;
+      padding: 6px 18px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .nav-links a:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      background: var(--coral);
+      color: var(--white);
+    }
+
+    /* Hamburger for mobile */
+    .hamburger {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      font-size: 2rem; line-height: 1;
+    }
+
+    /* =============================================
+       HERO SECTION
+    ============================================== */
+    #home {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 20px 40px;
+      position: relative;
+    }
+
+    /* Rolling hills */
+    .hills {
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      overflow: hidden; line-height: 0;
+    }
+    .hills svg { display: block; width: 100%; height: 120px; }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 10vw, 6rem);
+      line-height: 1.1;
+      color: var(--white);
+      text-shadow: 4px 4px 0 var(--dark), -2px -2px 0 var(--dark), 2px -2px 0 var(--dark), -2px 2px 0 var(--dark);
+      animation: bounceIn .8s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    .hero-sub {
+      font-size: 1.3rem;
+      color: var(--white);
+      margin: 12px 0 30px;
+      font-weight: 700;
+      text-shadow: 2px 2px 0 var(--dark);
+    }
+
+    .btn-primary {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      padding: 14px 36px;
+      background: var(--coral);
+      color: var(--white);
+      border: var(--outline);
+      border-radius: 50px;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      transform: translateY(-4px) rotate(-2deg);
+      box-shadow: 8px 8px 0 var(--dark);
+    }
+
+    /* Decorative stars */
+    .stars-deco { position: absolute; top: 20px; width: 100%; display: flex; justify-content: space-around; pointer-events: none; }
+    .star { font-size: 2rem; animation: spin 4s linear infinite; }
+    .star:nth-child(2) { animation-duration: 6s; font-size: 1.4rem; }
+    .star:nth-child(3) { animation-duration: 3s; font-size: 2.5rem; }
+
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes bounceIn {
+      0%   { transform: scale(.3) rotate(-10deg); opacity: 0; }
+      50%  { transform: scale(1.08) rotate(3deg); opacity: 1; }
+      70%  { transform: scale(.95) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    /* =============================================
+       SECTION SHARED STYLES
+    ============================================== */
+    section { padding: 70px 20px; }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      text-align: center;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+    .section-title span { color: var(--coral); }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 40px;
+      opacity: .75;
+    }
+
+    /* =============================================
+       CHARACTERS SECTION
+    ============================================== */
+    #characters { background: var(--grass); border-top: var(--outline); border-bottom: var(--outline); }
+
+    .characters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Each character card */
+    .char-card {
+      background: var(--white);
+      border: var(--outline);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      text-decoration: none;
+      color: var(--dark);
+      display: block;
+    }
+    .char-card:hover {
+      transform: translateY(-8px) rotate(2deg);
+      box-shadow: 8px 8px 0 var(--dark);
+    }
+    .char-card:nth-child(even):hover { transform: translateY(-8px) rotate(-2deg); }
+
+    .char-face {
+      font-size: 5rem;
+      padding: 20px 10px 10px;
+      display: block;
+      /* Subtle bounce animation on hover triggers via JS class */
+      transition: transform .3s;
+    }
+    .char-card:hover .char-face { animation: wiggle .4s ease; }
+
+    @keyframes wiggle {
+      0%,100% { transform: rotate(0); }
+      25% { transform: rotate(-12deg) scale(1.2); }
+      75% { transform: rotate(12deg) scale(1.2); }
+    }
+
+    .char-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      padding: 4px 0;
+    }
+
+    .char-tag {
+      font-size: .85rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 50px;
+      display: inline-block;
+      margin: 6px 0 16px;
+      border: 2px solid var(--dark);
+    }
+
+    /* =============================================
+       CHARACTER DETAIL MODAL
+    ============================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: var(--white);
+      border: var(--outline);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      padding: 36px 28px 28px;
+      position: relative;
+      animation: popIn .3s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(.5) rotate(-5deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute; top: 12px; right: 16px;
+      font-size: 1.6rem; background: none; border: none;
+      cursor: pointer; line-height: 1;
+    }
+
+    .modal-face  { font-size: 6rem; display: block; }
+    .modal-name  { font-family: var(--font-display); font-size: 2.2rem; margin: 8px 0 4px; }
+    .modal-power { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+    .modal-desc  { font-size: .97rem; line-height: 1.6; color: #444; }
+    .modal-badge { display: inline-block; margin-top: 16px; padding: 8px 20px; border-radius: 50px; border: var(--outline); font-family: var(--font-display); font-size: 1rem; }
+
+    /* =============================================
+       QUIZ SECTION
+    ============================================== */
+    #quiz { background: var(--purple); border-top: var(--outline); border-bottom: var(--outline); }
+    #quiz .section-title { color: var(--white); text-shadow: 3px 3px 0 var(--dark); }
+    #quiz .section-subtitle { color: var(--white); }
+
+    .quiz-box {
+      background: var(--white);
+      border: var(--outline);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 36px 28px;
+    }
+
+    .quiz-progress { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; }
+    .quiz-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%; border: var(--outline);
+      background: #ddd; transition: background .3s;
+    }
+    .quiz-dot.done { background: var(--grass); }
+    .quiz-dot.active { background: var(--sun); }
+
+    .quiz-question { font-family: var(--font-display); font-size: 1.6rem; text-align: center; margin-bottom: 8px; }
+    .quiz-emoji   { font-size: 3.5rem; text-align: center; display: block; margin-bottom: 18px; }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-btn {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 10px;
+      border: var(--outline);
+      border-radius: var(--radius);
+      background: var(--sky);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s, background .2s;
+      text-align: center;
+    }
+    .quiz-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .quiz-btn.correct { background: var(--grass) !important; color: var(--white); }
+    .quiz-btn.wrong   { background: var(--coral) !important; color: var(--white); }
+    .quiz-btn:disabled { cursor: default; opacity: .85; }
+
+    .quiz-feedback {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-top: 18px;
+      min-height: 2rem;
+    }
+
+    .quiz-result {
+      text-align: center;
+      animation: bounceIn .6s ease;
+    }
+    .quiz-result .big-emoji { font-size: 5rem; display: block; }
+    .quiz-result h3 { font-family: var(--font-display); font-size: 2.2rem; margin: 10px 0 6px; }
+    .quiz-result p  { font-size: 1.1rem; margin-bottom: 20px; }
+
+    .btn-reset {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      padding: 12px 32px;
+      background: var(--sun);
+      border: var(--outline);
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .btn-reset:hover { transform: scale(1.06); }
+
+    /* =============================================
+       WORD SCRAMBLE GAME SECTION
+    ============================================== */
+    #game { background: var(--orange); border-top: var(--outline); border-bottom: var(--outline); }
+    #game .section-title { color: var(--white); text-shadow: 3px 3px 0 var(--dark); }
+    #game .section-subtitle { color: var(--white); }
+
+    .game-box {
+      background: var(--white);
+      border: var(--outline);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 36px 28px;
+      text-align: center;
+    }
+
+    .scramble-word {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      letter-spacing: 8px;
+      color: var(--coral);
+      margin: 10px 0 6px;
+      text-shadow: 2px 2px 0 var(--dark);
+    }
+    .scramble-hint { font-size: .9rem; font-weight: 700; color: #666; margin-bottom: 18px; }
+
+    .scramble-input {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      padding: 10px 18px;
+      border: var(--outline);
+      border-radius: var(--radius);
+      width: 100%;
+      text-align: center;
+      letter-spacing: 4px;
+      outline: none;
+      box-shadow: var(--shadow);
+      text-transform: uppercase;
+    }
+    .scramble-input:focus { box-shadow: 0 0 0 4px var(--sun), var(--shadow); }
+
+    .game-actions { display: flex; gap: 12px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
+
+    .btn-game {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      padding: 10px 26px;
+      border: var(--outline);
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .btn-game:hover { transform: translateY(-3px); }
+    .btn-submit { background: var(--grass); color: var(--white); }
+    .btn-skip   { background: var(--sky); }
+    .btn-hint   { background: var(--sun); }
+
+    .game-score {
+      display: flex; gap: 20px; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .score-badge {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      padding: 6px 18px;
+      border: var(--outline);
+      border-radius: 50px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .score-badge span { color: var(--coral); }
+
+    .game-msg {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      min-height: 2rem;
+      margin-top: 12px;
+    }
+    .game-msg.correct-msg { color: var(--grass); animation: pulse .4s ease; }
+    .game-msg.wrong-msg   { color: var(--coral); }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* =============================================
+       FOOTER
+    ============================================== */
+    footer {
+      background: var(--dark);
+      color: var(--white);
+      text-align: center;
+      padding: 30px 20px;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      border-top: var(--outline);
+    }
+    footer span { color: var(--sun); }
+    .footer-emojis { font-size: 1.8rem; letter-spacing: 6px; margin-bottom: 8px; }
+
+    /* =============================================
+       CONFETTI CANVAS
+    ============================================== */
+    #confetti-canvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 300;
+    }
+
+    /* =============================================
+       RESPONSIVE – Mobile
+    ============================================== */
+    @media (max-width: 620px) {
+      .nav-links { display: none; flex-direction: column; gap: 8px; position: absolute; top: 70px; left: 0; right: 0; background: var(--sun); border-bottom: var(--outline); padding: 16px 20px; }
+      .nav-links.open { display: flex; }
+      .hamburger { display: block; }
+      .quiz-options { grid-template-columns: 1fr; }
+      .game-actions { flex-direction: column; align-items: center; }
+      .scramble-word { font-size: 2rem; letter-spacing: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =============================================
+     BACKGROUND CLOUDS (purely decorative)
+============================================== -->
+<div class="clouds-bg" id="cloudsBg"></div>
+
+<!-- =============================================
+     CONFETTI CANVAS (fires on quiz complete)
+============================================== -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- =============================================
+     NAVIGATION
+============================================== -->
+<nav>
+  <a href="#home" class="nav-logo">🎨 Cartoon<span>World</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">🏠 Home</a></li>
+    <li><a href="#characters">🌟 Characters</a></li>
+    <li><a href="#quiz">🧠 Quiz</a></li>
+    <li><a href="#game">🎮 Game</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+</nav>
+
+<div class="wrapper">
+
+  <!-- =============================================
+       HERO SECTION
+  ============================================== -->
+  <section id="home">
+    <div class="stars-deco">
+      <span class="star">⭐</span>
+      <span class="star">🌟</span>
+      <span class="star">✨</span>
+      <span class="star">⭐</span>
+    </div>
+
+    <h1 class="hero-title">Welcome to<br>Cartoon World! 🎨</h1>
+    <p class="hero-sub">Your favourite toons, quizzes & games — all in one place!</p>
+    <a href="#characters" class="btn-primary">Meet the Characters 👇</a>
+
+    <!-- Rolling green hills at bottom of hero -->
+    <div class="hills">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,80 C360,20 720,110 1080,50 C1260,20 1380,80 1440,60 L1440,120 L0,120 Z" fill="#6BCB77" stroke="#2D2D2D" stroke-width="2"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- =============================================
+       CHARACTERS SECTION
+  ============================================== -->
+  <section id="characters">
+    <h2 class="section-title">Meet the <span>Characters</span>!</h2>
+    <p class="section-subtitle">Click a character to learn more about them 👆</p>
+
+    <div class="characters-grid" id="charactersGrid">
+      <!-- Cards generated by JavaScript below -->
+    </div>
+  </section>
+
+  <!-- =============================================
+       QUIZ SECTION
+  ============================================== -->
+  <section id="quiz">
+    <h2 class="section-title">🧠 Cartoon <span>Quiz</span>!</h2>
+    <p class="section-subtitle">5 questions — how many can you get right?</p>
+
+    <div class="quiz-box">
+      <!-- Progress dots -->
+      <div class="quiz-progress" id="quizProgress"></div>
+
+      <!-- Question area -->
+      <div id="quizArea"></div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       WORD SCRAMBLE GAME SECTION
+  ============================================== -->
+  <section id="game">
+    <h2 class="section-title">🎮 Word <span>Scramble</span>!</h2>
+    <p class="section-subtitle">Unscramble the cartoon character name!</p>
+
+    <div class="game-box">
+      <!-- Score row -->
+      <div class="game-score">
+        <div class="score-badge">Score: <span id="gameScore">0</span></div>
+        <div class="score-badge">Streak: <span id="gameStreak">0</span> 🔥</div>
+      </div>
+
+      <span id="gameEmoji" style="font-size:4rem; display:block; margin-bottom:6px;">🤔</span>
+      <p style="font-weight:700; margin-bottom:8px;">Unscramble this character name:</p>
+      <div class="scramble-word" id="scrambleWord">LOADING</div>
+      <div class="scramble-hint" id="scrambleHint">Hint loading...</div>
+
+      <input
+        class="scramble-input"
+        id="scrambleInput"
+        type="text"
+        placeholder="YOUR ANSWER"
+        maxlength="20"
+        autocomplete="off"
+        spellcheck="false"
+      />
+
+      <div class="game-actions">
+        <button class="btn-game btn-submit" id="btnSubmit">✅ Submit</button>
+        <button class="btn-game btn-hint"   id="btnHint">💡 Hint</button>
+        <button class="btn-game btn-skip"   id="btnSkip">⏭️ Skip</button>
+      </div>
+
+      <div class="game-msg" id="gameMsg"></div>
+    </div>
+  </section>
+
+</div><!-- /.wrapper -->
+
+<!-- =============================================
+     CHARACTER DETAIL MODAL
+============================================== -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Close">✖️</button>
+    <span class="modal-face"  id="modalFace"></span>
+    <div  class="modal-name"  id="modalName"></div>
+    <div  class="modal-power" id="modalPower"></div>
+    <p    class="modal-desc"  id="modalDesc"></p>
+    <span class="modal-badge" id="modalBadge"></span>
+  </div>
+</div>
+
+<!-- =============================================
+     FOOTER
+============================================== -->
+<footer>
+  <div class="footer-emojis">🎨 🌟 🎮 🧠 ✨</div>
+  <p>Made with <span>❤️</span> for cartoon fans everywhere!</p>
+  <p style="opacity:.6; font-size:.9rem; margin-top:6px;">© 2025 CartoonWorld — Keep on toon-ing!</p>
+</footer>
+
+
+<script>
+/* =============================================
+   DATA — Characters
+============================================== */
+const CHARACTERS = [
+  {
+    emoji: "🐭",
+    name: "Mighty Mousey",
+    tag: "The Hero",
+    tagColor: "#FF6B6B",
+    power: "Super Squeaks & Lightning Speed",
+    desc: "Mighty Mousey is the bravest mouse in all of Cartoon City! Armed with a tiny cape and a giant heart, he saves the day one squeak at a time. He loves cheese pizza and long naps after adventures.",
+    badge: "⚡ Fastest in Cartoon City!",
+    badgeBg: "#FFD93D",
+  },
+  {
+    emoji: "🐸",
+    name: "Zippy Frog",
+    tag: "The Trickster",
+    tagColor: "#6BCB77",
+    power: "Elastic Tongue & Invisibility",
+    desc: "Zippy never sits still — not even for a millisecond! This turbo-charged frog bounces off walls, ceilings, and occasionally the moon. Favourite hobby: collecting rubber ducks.",
+    badge: "🌀 Master of Mischief!",
+    badgeBg: "#C77DFF",
+  },
+  {
+    emoji: "🦄",
+    name: "Glitter Uni",
+    tag: "The Dreamer",
+    tagColor: "#C77DFF",
+    power: "Rainbow Magic & Wish Granting",
+    desc: "Glitter Uni gallops through clouds and sprinkles rainbow dust on sad days. She can grant up to three wishes a day — but only if you promise to share your snacks.",
+    badge: "🌈 Rainbow Guardian!",
+    badgeBg: "#7ECEF4",
+  },
+  {
+    emoji: "🤖",
+    name: "Bolt-3000",
+    tag: "The Brain",
+    tagColor: "#7ECEF4",
+    power: "Hyper-Computing & Laser Eyes",
+    desc: "Built in a cozy garage by a kid inventor, Bolt-3000 can compute a trillion facts per second but still can't understand why jokes are funny. He's trying his best though! 🤣",
+    badge: "🔩 Smartest Robot Around!",
+    badgeBg: "#FF9A3C",
+  },
+  {
+    emoji: "🐼",
+    name: "Panda Paws",
+    tag: "The Chill One",
+    tagColor: "#FF9A3C",
+    power: "Kung-Fu Cuddles & Bamboo Boomerang",
+    desc: "Panda Paws looks laid-back but don't be fooled — this panda is a martial arts master who can flick bamboo with pinpoint precision. Off duty, mostly eating dumplings.",
+    badge: "🥋 Champion of Calm!",
+    badgeBg: "#6BCB77",
+  },
+  {
+    emoji: "🦊",
+    name: "Foxy Flash",
+    tag: "The Speedster",
+    tagColor: "#FFD93D",
+    power: "Time Dash & Turbo Tail Spin",
+    desc: "Foxy Flash moves so fast she leaves tiny foxes behind everywhere she goes. She once ran around the world in 4 seconds just to pick up a lost balloon. Favourite song: anything fast.",
+    badge: "🏃 Zooooom!",
+    badgeBg: "#FF6B6B",
+  },
+];
+
+/* =============================================
+   RENDER CHARACTER CARDS
+============================================== */
+function renderCharacters() {
+  const grid = document.getElementById('charactersGrid');
+  grid.innerHTML = '';
+
+  CHARACTERS.forEach((char, i) => {
+    const card = document.createElement('a');
+    card.className = 'char-card';
+    card.href = '#characters';
+    card.setAttribute('data-index', i);
+    card.setAttribute('aria-label', `Learn about ${char.name}`);
+    card.innerHTML = `
+      <span class="char-face">${char.emoji}</span>
+      <div class="char-name">${char.name}</div>
+      <span class="char-tag" style="background:${char.tagColor};color:#fff;">${char.tag}</span>
+    `;
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(i);
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* =============================================
+   CHARACTER MODAL
+============================================== */
+function openModal(index) {
+  const c = CHARACTERS[index];
+  document.getElementById('modalFace').textContent = c.emoji;
+  document.getElementById('modalName').textContent = c.name;
+  document.getElementById('modalPower').textContent = `✨ Special Power: ${c.power}`;
+  document.getElementById('modalDesc').textContent = c.desc;
+  const badge = document.getElementById('modalBadge');
+  badge.textContent = c.badge;
+  badge.style.background = c.badgeBg;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('modalClose').focus();
+}
+
+document.getElementById('modalClose').addEventListener('click', () => {
+  document.getElementById('modalOverlay').classList.remove('active');
+});
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+});
+
+/* =============================================
+   DATA — Quiz Questions
+============================================== */
+const QUIZ_QUESTIONS = [
+  {
+    emoji: "🐭",
+    q: "Which character has 'Super Squeaks & Lightning Speed'?",
+    options: ["Foxy Flash", "Mighty Mousey", "Bolt-3000", "Zippy Frog"],
+    answer: 1,
+  },
+  {
+    emoji: "🤔",
+    q: "What colour are Glitter Uni's magic powers?",
+    options: ["Green", "Red", "Rainbow", "Blue"],
+    answer: 2,
+  },
+  {
+    emoji: "🐸",
+    q: "What is Zippy Frog's favourite hobby?",
+    options: ["Cooking", "Collecting rubber ducks", "Sleeping", "Painting"],
+    answer: 1,
+  },
+  {
+    emoji: "🤖",
+    q: "Who was Bolt-3000 built by?",
+    options: ["A scientist", "A kid inventor", "A robot factory", "Panda Paws"],
+    answer: 1,
+  },
+  {
+    emoji: "🦊",
+    q: "How fast did Foxy Flash run around the world?",
+    options: ["1 minute", "10 seconds", "4 seconds", "30 seconds"],
+    answer: 2,
+  },
+];
+
+/* =============================================
+   QUIZ LOGIC
+============================================== */
+let quizIndex = 0;
+let quizScore = 0;
+
+function buildQuizProgress() {
+  const prog = document.getElementById('quizProgress');
+  prog.innerHTML = '';
+  QUIZ_QUESTIONS.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'quiz-dot' + (i < quizIndex ? ' done' : i === quizIndex ? ' active' : '');
+    prog.appendChild(dot);
+  });
+}
+
+function renderQuizQuestion() {
+  buildQuizProgress();
+  const area = document.getElementById('quizArea');
+
+  if (quizIndex >= QUIZ_QUESTIONS.length) {
+    // Show result
+    const pct = Math.round((quizScore / QUIZ_QUESTIONS.length) * 100);
+    let emoji = '😢', msg = "Don't worry, try again!";
+    if (pct === 100) { emoji = '🏆'; msg = "PERFECT SCORE! You're a Cartoon World genius!"; launchConfetti(); }
+    else if (pct >= 60) { emoji = '🌟'; msg = "Great job! You really know your cartoons!"; }
+    else if (pct >= 40) { emoji = '👍'; msg = "Not bad! A little more toon practice needed."; }
+
+    area.innerHTML = `
+      <div class="quiz-result">
+        <span class="big-emoji">${emoji}</span>
+        <h3>You scored ${quizScore}/${QUIZ_QUESTIONS.length}!</h3>
+        <p>${msg}</p>
+        <button class="btn-reset" id="quizRetry">🔄 Try Again!</button>
+      </div>`;
+    document.getElementById('quizRetry').addEventListener('click', () => {
+      quizIndex = 0; quizScore = 0; renderQuizQuestion();
+    });
+    return;
+  }
+
+  const q = QUIZ_QUESTIONS[quizIndex];
+  area.innerHTML = `
+    <span class="quiz-emoji">${q.emoji}</span>
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+  `;
+
+  const opts = document.getElementById('quizOptions');
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => handleQuizAnswer(i, q.answer));
+    opts.appendChild(btn);
+  });
+}
+
+function handleQuizAnswer(chosen, correct) {
+  const btns = document.querySelectorAll('.quiz-btn');
+  btns.forEach(b => b.disabled = true);
+  const feedback = document.getElementById('quizFeedback');
+
+  if (chosen === correct) {
+    btns[chosen].classList.add('correct');
+    feedback.textContent = '🎉 Correct! Amazing!';
+    quizScore++;
+  } else {
+    btns[chosen].classList.add('wrong');
+    btns[correct].classList.add('correct');
+    feedback.textContent = '😅 Not quite! The highlighted one was right.';
+  }
+
+  setTimeout(() => { quizIndex++; renderQuizQuestion(); }, 1800);
+}
+
+/* =============================================
+   DATA — Word Scramble words
+============================================== */
+const SCRAMBLE_WORDS = [
+  { word: "MOUSEY",   hint: "🐭 Our tiny hero with lightning speed",          emoji: "🐭" },
+  { word: "ZIPPY",    hint: "🐸 This frog bounces everywhere!",               emoji: "🐸" },
+  { word: "GLITTER",  hint: "🦄 Part of a magical unicorn's name",            emoji: "🦄" },
+  { word: "PANDA",    hint: "🐼 Kung-Fu master who loves dumplings",          emoji: "🐼" },
+  { word: "FOXY",     hint: "🦊 The speedster who ran around the world",      emoji: "🦊" },
+  { word: "BOLT",     hint: "🤖 Part of our favourite robot's name",          emoji: "🤖" },
+  { word: "CARTOON",  hint: "🎨 The whole world you're exploring right now!", emoji: "🎨" },
+  { word: "HERO",     hint: "⭐ What every one of these characters is!",     emoji: "⭐" },
+];
+
+/* =============================================
+   SCRAMBLE GAME LOGIC
+============================================== */
+let gameScore = 0, gameStreak = 0, currentScramble = null, hintUsed = false;
+
+function scramble(word) {
+  // Fisher-Yates shuffle; ensure result differs from original
+  let arr = word.split('');
+  let result = word;
+  while (result === word) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    result = arr.join('');
+  }
+  return result;
+}
+
+function loadScrambleWord() {
+  hintUsed = false;
+  const item = SCRAMBLE_WORDS[Math.floor(Math.random() * SCRAMBLE_WORDS.length)];
+  currentScramble = item;
+  document.getElementById('scrambleWord').textContent = scramble(item.word);
+  document.getElementById('scrambleHint').textContent = '💬 ' + item.hint;
+  document.getElementById('gameEmoji').textContent = item.emoji;
+  document.getElementById('scrambleInput').value = '';
+  document.getElementById('gameMsg').textContent = '';
+  document.getElementById('gameMsg').className = 'game-msg';
+  document.getElementById('scrambleInput').focus();
+}
+
+function checkScramble() {
+  const val = document.getElementById('scrambleInput').value.trim().toUpperCase();
+  const msg = document.getElementById('gameMsg');
+  if (!val) return;
+
+  if (val === currentScramble.word) {
+    const pts = hintUsed ? 1 : 2;
+    gameScore += pts;
+    gameStreak++;
+    document.getElementById('gameScore').textContent = gameScore;
+    document.getElementById('gameStreak').textContent = gameStreak;
+    msg.textContent = gameStreak >= 3
+      ? `🔥 ON FIRE! +${pts} points!`
+      : `✅ Correct! +${pts} point${pts>1?'s':''}!`;
+    msg.className = 'game-msg correct-msg';
+    setTimeout(loadScrambleWord, 1200);
+  } else {
+    gameStreak = 0;
+    document.getElementById('gameStreak').textContent = 0;
+    msg.textContent = '❌ Not quite — try again!';
+    msg.className = 'game-msg wrong-msg';
+    document.getElementById('scrambleInput').value = '';
+  }
+}
+
+document.getElementById('btnSubmit').addEventListener('click', checkScramble);
+document.getElementById('scrambleInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') checkScramble();
+});
+
+document.getElementById('btnHint').addEventListener('click', () => {
+  hintUsed = true;
+  const word = currentScramble.word;
+  const input = document.getElementById('scrambleInput');
+  // Reveal first letter as a hint
+  input.value = word[0];
+  document.getElementById('gameMsg').textContent = `💡 First letter is "${word[0]}" (bonus reduced to 1pt)`;
+  document.getElementById('gameMsg').className = 'game-msg';
+  input.focus();
+});
+
+document.getElementById('btnSkip').addEventListener('click', () => {
+  gameStreak = 0;
+  document.getElementById('gameStreak').textContent = 0;
+  document.getElementById('gameMsg').textContent = `⏭️ It was: ${currentScramble.word}`;
+  document.getElementById('gameMsg').className = 'game-msg';
+  setTimeout(loadScrambleWord, 1000);
+});
+
+/* =============================================
+   BACKGROUND CLOUDS GENERATOR
+============================================== */
+function generateClouds() {
+  const container = document.getElementById('cloudsBg');
+  for (let i = 0; i < 6; i++) {
+    const cloud = document.createElement('div');
+    cloud.className = 'cloud';
+    const size = 80 + Math.random() * 120;
+    const top  = Math.random() * 55;
+    const dur  = 25 + Math.random() * 30;
+    const delay = -Math.random() * dur; // negative delay so they start mid-screen
+    cloud.style.cssText = `
+      width:${size}px; height:${size * 0.45}px;
+      top:${top}%; left:0;
+      animation-duration:${dur}s;
+      animation-delay:${delay}s;
+    `;
+    container.appendChild(cloud);
+  }
+}
+
+/* =============================================
+   CONFETTI EXPLOSION (on perfect quiz score)
+============================================== */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const COLORS = ['#FF6B6B','#FFD93D','#6BCB77','#7ECEF4','#C77DFF','#FF9A3C'];
+  const pieces = Array.from({ length: 160 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    w: 8 + Math.random() * 10,
+    h: 4 + Math.random() * 6,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    rot: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - .5) * .2,
+    vx: (Math.random() - .5) * 4,
+    vy: 3 + Math.random() * 4,
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+    });
+    frame++;
+    if (frame < 240) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+/* =============================================
+   MOBILE HAMBURGER MENU
+============================================== */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// Close nav when a link is clicked on mobile
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
+/* =============================================
+   KEYBOARD: close modal on Escape
+============================================== */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.getElementById('modalOverlay').classList.remove('active');
+});
+
+/* =============================================
+   INIT
+============================================== */
+generateClouds();
+renderCharacters();
+renderQuizQuestion();
+loadScrambleWord();
+</script>
+</body>
+</html>
